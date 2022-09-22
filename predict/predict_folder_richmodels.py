@@ -9,7 +9,7 @@ import jpegio as jio
 from oct2py import octave
 sys.path.insert(1,'./')
 from train_module.tools.jpeg_utils import *
-
+from pathlib import Path
 octave.addpath('rich_models/')
 
 def main():
@@ -48,9 +48,10 @@ def main():
         f = octave.DCTR
     elif args.experiment == 'JRM':
         f = octave.JRM
-            
+    filelist = os.listdir(folder)
+
     votes = []
-    for im_name in tqdm(IL, bar_format='{l_bar}{bar:20}{r_bar}{bar:-20b}'): 
+    for im_name in tqdm(IL, bar_format='{l_bar}{bar:20}{r_bar}{bar:-20b}'):
         tmp = jio.read(os.path.join(folder, im_name))
         feature = f(tmp.coef_arrays[0], tmp.quant_tables[0])
         # coef_arrays is a list of numpy.ndarray objects that represent DCT coefficients of YCbCr channels in JPEG
@@ -63,7 +64,8 @@ def main():
     pred_dataframe['NAME'] = IL
     pred_dataframe[args.experiment] = votes
     
-    output_path = os.path.join(args.output, args.subset, 'QF'+str(args.quality_factor)+'_'+args.experiment+'_votes_'+args.folder[:-1]+'.csv')
+    output_path = Path(os.path.join(args.output, args.subset, 'QF'+str(args.quality_factor)+'_'+args.experiment+'_votes_'+args.folder[:-1]+'.csv'))
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     pred_dataframe.to_csv(output_path)
     
 if __name__ == "__main__":
