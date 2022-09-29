@@ -17,7 +17,7 @@ old_library=''
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/ompi/libmpi.la /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/orte/libopen-rte.la /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/libopen-pal.la -lm -lz'
+dependency_libs=' /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/ompi/libmpi.la /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/orte/libopen-rte.la /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/libopen-pal.la -lm -lz'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
@@ -39,4 +39,4 @@ dlpreopen=''
 
 # Directory that this library needs to be installed in:
 libdir='/usr/local/lib/openmpi'
-relink_command="(cd /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/ompi/mca/coll/tuned; /bin/bash \"/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/libtool\"  --silent --tag CC --mode=relink gcc -O3 -DNDEBUG -finline-functions -fno-strict-aliasing -mcx16 -module -avoid-version -o mca_coll_tuned.la -rpath /usr/local/lib/openmpi coll_tuned_decision_fixed.lo coll_tuned_decision_dynamic.lo coll_tuned_dynamic_file.lo coll_tuned_dynamic_rules.lo coll_tuned_component.lo coll_tuned_module.lo coll_tuned_allgather_decision.lo coll_tuned_allgatherv_decision.lo coll_tuned_allreduce_decision.lo coll_tuned_alltoall_decision.lo coll_tuned_gather_decision.lo coll_tuned_alltoallv_decision.lo coll_tuned_barrier_decision.lo coll_tuned_reduce_decision.lo coll_tuned_bcast_decision.lo coll_tuned_reduce_scatter_decision.lo coll_tuned_scatter_decision.lo coll_tuned_reduce_scatter_block_decision.lo coll_tuned_exscan_decision.lo coll_tuned_scan_decision.lo ../../../../ompi/libmpi.la -lm -lz @inst_prefix_dir@)"
+relink_command="(cd /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/ompi/mca/coll/tuned; /bin/bash \"/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/libtool\"  --silent --tag CC --mode=relink gcc -O3 -DNDEBUG -finline-functions -fno-strict-aliasing -mcx16 -module -avoid-version -o mca_coll_tuned.la -rpath /usr/local/lib/openmpi coll_tuned_decision_fixed.lo coll_tuned_decision_dynamic.lo coll_tuned_dynamic_file.lo coll_tuned_dynamic_rules.lo coll_tuned_component.lo coll_tuned_module.lo coll_tuned_allgather_decision.lo coll_tuned_allgatherv_decision.lo coll_tuned_allreduce_decision.lo coll_tuned_alltoall_decision.lo coll_tuned_gather_decision.lo coll_tuned_alltoallv_decision.lo coll_tuned_barrier_decision.lo coll_tuned_reduce_decision.lo coll_tuned_bcast_decision.lo coll_tuned_reduce_scatter_decision.lo coll_tuned_scatter_decision.lo coll_tuned_reduce_scatter_block_decision.lo coll_tuned_exscan_decision.lo coll_tuned_scan_decision.lo ../../../../ompi/libmpi.la -lm -lz @inst_prefix_dir@)"

@@ -188,7 +188,7 @@ func_exec_program ()
 
   if test -f "$progdir/$program"; then
     # Add our own library path to LD_LIBRARY_PATH
-    LD_LIBRARY_PATH="/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/.libs:$LD_LIBRARY_PATH"
+    LD_LIBRARY_PATH="/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/.libs:$LD_LIBRARY_PATH"
 
     # Some systems cannot cope with colon-terminated LD_LIBRARY_PATH
     # The second colon is a workaround for a bug in BeOS R4 sed

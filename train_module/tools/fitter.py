@@ -9,8 +9,8 @@ from glob import glob
 from apex import amp
 import sys
 sys.path.insert(1,'./')
-from train.tools.torch_utils import *
-from train.tools.kaggle_tools import *
+from train_module.tools.torch_utils import *
+from train_module.tools.kaggle_tools import *
 
 warnings.filterwarnings("ignore")
 

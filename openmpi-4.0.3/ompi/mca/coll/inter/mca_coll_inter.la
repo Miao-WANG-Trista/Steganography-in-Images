@@ -17,7 +17,7 @@ old_library=''
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/ompi/libmpi.la /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/orte/libopen-rte.la /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/libopen-pal.la -lm -lz'
+dependency_libs=' /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/ompi/libmpi.la /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/orte/libopen-rte.la /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/libopen-pal.la -lm -lz'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
@@ -39,4 +39,4 @@ dlpreopen=''
 
 # Directory that this library needs to be installed in:
 libdir='/usr/local/lib/openmpi'
-relink_command="(cd /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/ompi/mca/coll/inter; /bin/bash \"/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/libtool\"  --silent --tag CC --mode=relink gcc -O3 -DNDEBUG -finline-functions -fno-strict-aliasing -mcx16 -module -avoid-version -o mca_coll_inter.la -rpath /usr/local/lib/openmpi coll_inter.lo coll_inter_allreduce.lo coll_inter_allgather.lo coll_inter_allgatherv.lo coll_inter_gather.lo coll_inter_gatherv.lo coll_inter_scatter.lo coll_inter_scatterv.lo coll_inter_bcast.lo coll_inter_component.lo coll_inter_reduce.lo ../../../../ompi/libmpi.la -lm -lz @inst_prefix_dir@)"
+relink_command="(cd /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/ompi/mca/coll/inter; /bin/bash \"/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/libtool\"  --silent --tag CC --mode=relink gcc -O3 -DNDEBUG -finline-functions -fno-strict-aliasing -mcx16 -module -avoid-version -o mca_coll_inter.la -rpath /usr/local/lib/openmpi coll_inter.lo coll_inter_allreduce.lo coll_inter_allgather.lo coll_inter_allgatherv.lo coll_inter_gather.lo coll_inter_gatherv.lo coll_inter_scatter.lo coll_inter_scatterv.lo coll_inter_bcast.lo coll_inter_component.lo coll_inter_reduce.lo ../../../../ompi/libmpi.la -lm -lz @inst_prefix_dir@)"

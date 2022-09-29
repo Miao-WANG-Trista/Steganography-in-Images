@@ -17,7 +17,7 @@ old_library=''
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix/src/mca/common/dstore/libmca_common_dstore.la -lm -lz'
+dependency_libs=' /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix/src/mca/common/dstore/libmca_common_dstore.la -lm -lz'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
@@ -39,4 +39,4 @@ dlpreopen=''
 
 # Directory that this library needs to be installed in:
 libdir='/usr/local/lib/pmix'
-relink_command="(cd /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix/src/mca/gds/ds21; /bin/bash \"/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix/libtool\"  --silent --tag CC --mode=relink gcc -DNDEBUG -O3 -finline-functions -fno-strict-aliasing -mcx16 -module -avoid-version /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix/src/mca/common/dstore/libmca_common_dstore.la -o mca_gds_ds21.la -rpath /usr/local/lib/pmix gds_ds21_base.lo gds_ds21_lock.lo gds_ds21_lock_pthread.lo gds_ds21_component.lo gds_ds21_file.lo -lm -lz @inst_prefix_dir@)"
+relink_command="(cd /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix/src/mca/gds/ds21; /bin/bash \"/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix/libtool\"  --silent --tag CC --mode=relink gcc -DNDEBUG -O3 -finline-functions -fno-strict-aliasing -mcx16 -module -avoid-version /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix/src/mca/common/dstore/libmca_common_dstore.la -o mca_gds_ds21.la -rpath /usr/local/lib/pmix gds_ds21_base.lo gds_ds21_lock.lo gds_ds21_lock_pthread.lo gds_ds21_component.lo gds_ds21_file.lo -lm -lz @inst_prefix_dir@)"

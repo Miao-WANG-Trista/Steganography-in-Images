@@ -12,10 +12,10 @@
 # in the top-level romio directory
 #
 PREFIX=/usr/local
-ROMIO_HOME=/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/ompi/mca/io/romio321/romio
+ROMIO_HOME=/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/ompi/mca/io/romio321/romio
 ARCH=
 RANLIB=ranlib
-TOP_BUILD_DIR=/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/ompi/mca/io/romio321/romio
+TOP_BUILD_DIR=/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/ompi/mca/io/romio321/romio
 # LAM Do we want to install or uninstall?
 WANT_INSTALL=1
 #
@@ -35,7 +35,7 @@ datarootdir=@datatrootdir@
 #datadir=${datarootdir}
 docdir=${datarootdir}/doc/${PACKAGE_TARNAME}
 ## Location of sources
-#top_srcdir=/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/ompi/mca/io/romio321/romio
+#top_srcdir=/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/ompi/mca/io/romio321/romio
 #
 # File access mode
 MODE=0644

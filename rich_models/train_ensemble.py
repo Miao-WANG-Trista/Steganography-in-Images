@@ -17,7 +17,7 @@ def main():
     arg = parser.add_argument
     arg('--model', type=str, default='DCTR', help='model name')
     arg('--features-folder', type=str, default='train_module/features/', help='model name')
-    arg('--quality-factor', type=int, default=75, help='quality factor')
+    # arg('--quality-factor', type=int, default=75, help='quality factor')
     arg('--output', type=str, default='weights/rich_models/', help='model name')
     
     args = parser.parse_args()

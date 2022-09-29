@@ -1,4 +1,6 @@
 import warnings
+from tensorflow.python.framework import ops
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import os 
 import sys
@@ -8,7 +10,9 @@ import jpegio as jio
 from tqdm import tqdm
 sys.path.insert(1,'./')
 from train_module.tools.jpeg_utils import *
-        
+import numpy as np
+from scipy import fftpack
+
         
 def getLatestGlobalStep(LOG_DIR):
     # no directory
@@ -79,7 +83,7 @@ def binary_acc(labels, predictions, weights=None, metrics_collections=None, upda
         ops.add_to_collections(metrics_collections, binary_acc)
     if updates_collections:
         ops.add_to_collections(updates_collections, binary_acc_op)
-    return binary_acc, binary_acc_op 
+    return binary_acc, binary_acc_op
 
 
 def test_predict(model_class, folder, file_names, load_path, nclasses, TTA):

@@ -42,7 +42,7 @@ my $timeout_cmd = "";
 # variable so that the MCA base knows where to find all the
 # components.
 my @myfullpaths;
-my $mybuilddir = "/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix";
+my $mybuilddir = "/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/mca/pmix/pmix3x/pmix";
 my $mypathstr = "src/mca/bfrops/v12:src/mca/bfrops/v20:src/mca/bfrops/v21:src/mca/bfrops/v3:src/mca/common/dstore:src/mca/gds/ds12:src/mca/gds/ds21:src/mca/gds/hash:src/mca/pdl/pdlopen:src/mca/pdl/plibltdl:src/mca/pif/bsdx_ipv4:src/mca/pif/bsdx_ipv6:src/mca/pif/linux_ipv6:src/mca/pif/posix_ipv4:src/mca/pif/solaris_ipv6:src/mca/pinstalldirs/config:src/mca/pinstalldirs/env:src/mca/plog/default:src/mca/plog/stdfd:src/mca/plog/syslog:src/mca/pnet/opa:src/mca/pnet/tcp:src/mca/pnet/test:src/mca/preg/native:src/mca/psec/dummy_handshake:src/mca/psec/munge:src/mca/psec/native:src/mca/psec/none:src/mca/psensor/file:src/mca/psensor/heartbeat:src/mca/pshmem/mmap:src/mca/ptl/tcp:src/mca/ptl/usock";
 my @splitstr = split(':', $mypathstr);
 foreach my $path (@splitstr) {

@@ -1,18 +1,22 @@
 Cython
 numpy
 tqdm
-torch==1.12.1+cu116
-torchvision
+pathlib
 git+https://github.com/dwgoon/jpegio
 catalyst==20.5.1
 albumentations==0.4.5
-timm==0.1.26
+timm==0.3.2
 catboost
 scikit-optimize
 # cv2
-horovod==0.19.1
-tensorflow-gpu==1.14.0
-git+https://github.com/mapillary/inplace_abn.git@v1.0.12
+# horovod==0.19.1
+# tensorflow
 oct2py
+scipy
+pandas
 efficientnet_pytorch==0.7.1
-inplace_abn
+sklearn
+torch==1.12.1+cu116
+torchvision
+torchaudio
+--extra-index-url https://download.pytorch.org/whl/cu116torchvision

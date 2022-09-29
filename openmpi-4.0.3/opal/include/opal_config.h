@@ -1446,7 +1446,7 @@
 /* #undef MCA_hwloc_external_shmem_header */
 
 /* Complete set of command line arguments given to ROMIOs configure script */
-#define MCA_io_romio321_COMPLETE_CONFIGURE_FLAGS " FROM_OMPI=yes CC='gcc' CFLAGS='-O3 -DNDEBUG -finline-functions -fno-strict-aliasing -mcx16  -D__EXTENSIONS__' CPPFLAGS='-I/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/mca/event/libevent2022/libevent -I/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/mca/event/libevent2022/libevent/include -I/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/mca/hwloc/hwloc201/hwloc/include  ' FFLAGS='' LDFLAGS=' ' --enable-shared --disable-static  --prefix=/usr/local --disable-aio --disable-weak-symbols --enable-strict --disable-f77 --disable-f90"
+#define MCA_io_romio321_COMPLETE_CONFIGURE_FLAGS " FROM_OMPI=yes CC='gcc' CFLAGS='-O3 -DNDEBUG -finline-functions -fno-strict-aliasing -mcx16  -D__EXTENSIONS__' CPPFLAGS='-I/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/mca/event/libevent2022/libevent -I/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/mca/event/libevent2022/libevent/include -I/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/mca/hwloc/hwloc201/hwloc/include  ' FFLAGS='' LDFLAGS=' ' --enable-shared --disable-static  --prefix=/usr/local --disable-aio --disable-weak-symbols --enable-strict --disable-f77 --disable-f90"
 
 /* Set of user-defined configure flags given to ROMIOs configure script via
    --with-io-romio-flags */

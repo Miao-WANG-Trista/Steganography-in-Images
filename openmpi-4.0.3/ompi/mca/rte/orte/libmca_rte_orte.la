@@ -17,7 +17,7 @@ old_library='libmca_rte_orte.a'
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/orte/libopen-rte.la /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/opal/libopen-pal.la -lm -lz'
+dependency_libs=' /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/orte/libopen-rte.la /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/opal/libopen-pal.la -lm -lz'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
@@ -39,4 +39,4 @@ dlpreopen=''
 
 # Directory that this library needs to be installed in:
 libdir=''
-relink_command="(cd /home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/ompi/mca/rte/orte; /bin/bash \"/home/dsintern3/Documents/GitHub/Kaggle-2020-Alaska2/abba/openmpi-4.0.3/libtool\"  --silent --tag CC --mode=relink gcc -O3 -DNDEBUG -finline-functions -fno-strict-aliasing -mcx16 -module -avoid-version -o libmca_rte_orte.la rte_orte_component.lo rte_orte_module.lo ../../../../orte/libopen-rte.la -lm -lz @inst_prefix_dir@)"
+relink_command="(cd /home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/ompi/mca/rte/orte; /bin/bash \"/home/dsintern3/Documents/GitHub/alaska2/openmpi-4.0.3/libtool\"  --silent --tag CC --mode=relink gcc -O3 -DNDEBUG -finline-functions -fno-strict-aliasing -mcx16 -module -avoid-version -o libmca_rte_orte.la rte_orte_component.lo rte_orte_module.lo ../../../../orte/libopen-rte.la -lm -lz @inst_prefix_dir@)"

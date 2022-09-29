@@ -8,12 +8,12 @@ import pandas as pd
 import pickle
 from apex import amp
 sys.path.insert(1,'./')
-from train.zoo.models import *
-from train.zoo.surgery import *
-from train.datafeeding.retriever import *
-from train.tools.torch_utils import *
-from train.tools.fitter import *
-from train.optim import get_optimizer
+from train_module.zoo.models import *
+from train_module.zoo.surgery import *
+from train_module.datafeeding.retriever import *
+from train_module.tools.torch_utils import *
+from train_module.tools.fitter import *
+from train_module.optim import get_optimizer
 
 def main():
     
