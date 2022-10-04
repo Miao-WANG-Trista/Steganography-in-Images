@@ -29,9 +29,12 @@ def main():
     arg('--output', type=str, default='models_predictions/', help='output folder')
     arg('--decoder', type=str, default='R' , help='how to decode jpeg files, NR or R')
     arg('--fp16', type=int, default=0 , help='Used AMP?')
-    arg('--subset', type=str, default='LB' , help='A subset of the folder? train_module, test or val')
+    arg('--subset', type=str, default='3Algorithms', help='the folder for three algorithms or nsf5?')
     arg('--device', type=str, default='cuda:0' , help='Device')
     arg("--test_single_image", help='test single image', action='store_true')
+    arg('--batch_size', type=int, default=10, help='batch_size for test loader')
+    arg('--num_workers', type=int, default=1, help='num-workers for test loader')
+
     
     args = parser.parse_args()
     #os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
@@ -42,8 +45,10 @@ def main():
     
     seed_everything(1994)
     os.makedirs(os.path.join(args.output,args.subset), exist_ok=True)
-    
-    net = get_net(args.model)
+    if args.subset =='3Algorithms':
+        net = get_net(args.model)
+    else:
+        net = get_net(args.model,out_features=2)
     # if using inplace_abn for speeding up, put args.surgery as 2
 
     # if args.surgery == 2:
@@ -53,7 +58,14 @@ def main():
     if args.surgery == 1:
         source = 'timm' if args.model.startswith('mixnet') else 'efficientnet-pytorch'
         net = to_MishME(net, source=source)
-        
+
+    if args.subset =='3Algorithms':
+        columns = [args.experiment + '_pc', args.experiment + '_pjm', args.experiment + '_pjuni', args.experiment + '_puerd']
+        column_list = ['NAME', args.experiment+'_pc', args.experiment+'_pjm', args.experiment+'_pjuni', args.experiment+'_puerd']
+
+    elif args.subset == 'for_nsf5':
+        columns = [args.experiment + '_pc', args.experiment + '_pnsf5']
+        column_list = ['NAME', args.experiment + '_pc', args.experiment + '_pnsf5']
     
     net = net.cuda(device)     
     checkpoint = torch.load(args.checkpoint, map_location=device)
@@ -62,7 +74,7 @@ def main():
     #     net = amp.initialize(net, None, opt_level='O1',loss_scale='dynamic',verbosity=0)
     net.eval()
 
-    args.test_time_augmentation = 1 if args.test_single_image else arg.test_time_augmentation
+    args.test_time_augmentation = 1 if args.test_single_image else args.test_time_augmentation
     if args.test_time_augmentation == 4:
         TTA = dict()
         TTA['rot1'] =  lambda x: np.rot90(x,1)
@@ -79,27 +91,19 @@ def main():
     
     if not args.test_single_image:
         IL  = os.listdir(DATA_ROOT_PATH+args.folder)
-        if args.subset != 'LB':
-            QFs = ['75','90', '95']
-            IL = []
-            for QF in QFs:
-                with open('./IL_'+args.subset+'_'+QF+'.p', 'rb') as handle:
-                    IL.extend(pickle.load(handle))
-
         test_retriever = TestRetriever(IL, DATA_ROOT_PATH+args.folder, decoder=args.decoder)
 
         test_loader = torch.utils.data.DataLoader(
             test_retriever,
-            batch_size=10,
+            batch_size=args.batch_size,
             shuffle=False,
-            num_workers=4,
+            num_workers=args.num_workers,
             drop_last=False)
 
-        pred_dataframe = pd.DataFrame(columns=['NAME', args.experiment+'_pc', args.experiment+'_pjm',
-                                               args.experiment+'_pjuni', args.experiment+'_puerd'])
+        pred_dataframe = pd.DataFrame(columns=column_list)
 
         pred_dataframe['NAME'] = IL
-        pred_dataframe[[args.experiment+'_pc', args.experiment+'_pjm', args.experiment+'_pjuni', args.experiment+'_puerd']] = 0.0
+        pred_dataframe[columns] = 0.0
 
         for transform in TTA.keys():
             y_preds = []
@@ -112,15 +116,17 @@ def main():
 
             y_preds = np.array(y_preds)
 
-            pred_dataframe[[args.experiment+'_pc', args.experiment+'_pjm', args.experiment+'_pjuni', args.experiment+'_puerd']] += y_preds
+            pred_dataframe[columns] += y_preds
+
 
     else:
         file_name = args.folder.split("/")[-1]
 
-        pred_dataframe = pd.DataFrame(columns=['NAME', args.experiment + '_pc', args.experiment + '_pjm', args.experiment + '_pjuni', args.experiment + '_puerd'])
+        pred_dataframe = pd.DataFrame(
+        columns=column_list)
 
         pred_dataframe['NAME'] = [file_name]
-        pred_dataframe[[args.experiment + '_pc', args.experiment + '_pjm', args.experiment + '_pjuni', args.experiment + '_puerd']] = 0.0
+        pred_dataframe[columns] = 0.0
         if args.decoder == 'NR':
             tmp = jio.read(args.folder)
             image = decompress_structure(tmp).astype(np.float32)
@@ -148,11 +154,10 @@ def main():
             y_preds.extend(y_pred)
             y_preds = np.array(y_preds)
 
-            pred_dataframe[[args.experiment + '_pc', args.experiment + '_pjm', args.experiment + '_pjuni',
-                            args.experiment + '_puerd']] += y_preds
+            pred_dataframe[columns] += y_preds
 
 
-    pred_dataframe[[args.experiment+'_pc', args.experiment+'_pjm', args.experiment+'_pjuni', args.experiment+'_puerd']] /= len(TTA.keys())
+    pred_dataframe[columns] /= len(TTA.keys())
 
     output_path = Path(os.path.join(args.output,args.subset,args.experiment+'_Test.csv'))
     output_path.parent.mkdir(parents=True, exist_ok=True)

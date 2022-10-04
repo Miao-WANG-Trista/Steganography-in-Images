@@ -21,7 +21,7 @@ def main():
     arg('--checkpoint', type=str, default='' , help='path to checkpoint')
     arg('--quality-factor', type=int, default=75 , help='quality factor')
     arg('--output', type=str, default='models_predictions/', help='output folder')
-    arg('--subset', type=str, default='LB' , help='A subset of the folder? train_module, test or val')
+    arg('--subset', type=str, default='3Algorithms' , help='the folder for three algorithms or nsf5?')
     arg("--test_single_image", help='test single image', action='store_true')
     
     args = parser.parse_args()
@@ -29,22 +29,19 @@ def main():
 
     if not args.test_single_image:
         folder = os.path.join(DATA_ROOT_PATH, args.folder)
-        if args.subset == 'LB':
-            names = os.listdir(folder)
-            test_qf_dicts_path = os.path.join(DATA_ROOT_PATH, 'Test_qf_dicts.p')
-            if not os.path.exists(test_qf_dicts_path):
-                (names_qf, qf_names) = get_qf_dicts(folder, names)
-                with open(test_qf_dicts_path, 'wb') as handle:
-                    pickle.dump((names_qf, qf_names), handle)
-            else:
-                with open(test_qf_dicts_path, 'rb') as handle:
-                    (names_qf, qf_names) = pickle.load(handle)
 
-            IL = qf_names[args.quality_factor]
-
+        names = os.listdir(folder)
+        test_qf_dicts_path = os.path.join(DATA_ROOT_PATH, args.subset + 'Test_qf_dicts.p')
+        if not os.path.exists(test_qf_dicts_path):
+            (names_qf, qf_names) = get_qf_dicts(folder, names)
+            with open(test_qf_dicts_path, 'wb') as handle:
+                pickle.dump((names_qf, qf_names), handle)
         else:
-            with open('./IL_'+args.subset+'_'+str(args.quality_factor)+'.p', 'rb') as handle:
-                IL = pickle.load(handle)
+
+            with open(test_qf_dicts_path, 'rb') as handle:
+                (names_qf, qf_names) = pickle.load(handle)
+
+        IL = qf_names[args.quality_factor]
 
         if args.experiment == 'DCTR':
             f = octave.DCTR
