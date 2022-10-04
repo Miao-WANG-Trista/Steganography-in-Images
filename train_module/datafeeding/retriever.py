@@ -36,13 +36,14 @@ def onehot(size, target):
 
 class TrainRetriever(Dataset):
 
-    def __init__(self, kinds, image_names, labels, decoder='NR', transforms=None):
+    def __init__(self, kinds, image_names, labels, decoder='NR',output_features=4,transforms=None):
         super().__init__()
         self.kinds = kinds
         self.image_names = image_names
         self.labels = labels
         self.transforms = transforms
         self.decoder = decoder
+        self.output_features = output_features
 
     def __getitem__(self, index: int):
         kind, image_name, label = self.kinds[index], self.image_names[index], self.labels[index]
@@ -61,7 +62,7 @@ class TrainRetriever(Dataset):
             sample = self.transforms(**sample)
             image = sample['image']
             
-        target = onehot(4, label)
+        target = onehot(self.output_features, label)
         return image, target, image_name
 
     def __len__(self) -> int:

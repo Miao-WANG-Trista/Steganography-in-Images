@@ -18,7 +18,7 @@ def main():
     arg('--model', type=str, default='DCTR', help='model name')
     arg('--features-folder', type=str, default='train_module/features/', help='model name')
     # arg('--quality-factor', type=int, default=75, help='quality factor')
-    arg('--output', type=str, default='weights/rich_models/for_nsf5', help='model name')
+    arg('--output', type=str, default='weights/rich_models/rich_models_for_nsf5', help='model name')
     
     args = parser.parse_args()
     os.makedirs(args.output, exist_ok=True)

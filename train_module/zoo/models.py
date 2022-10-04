@@ -8,7 +8,7 @@ import tensorflow as tf
 # from tensorflow.contrib import layers
 import numpy as np
 
-def get_net(model_name):
+def get_net(model_name,out_features=4):
     from efficientnet_pytorch import EfficientNet
     from torch import nn
     import timm
@@ -16,43 +16,43 @@ def get_net(model_name):
     zoo_params = {
     'efficientnet-b2': {
         'fc_name': '_fc',
-        'fc': nn.Linear(in_features=1408, out_features=4, bias=True),
+        'fc': nn.Linear(in_features=1408, out_features=out_features, bias=True),
         'init_op': partial(EfficientNet.from_pretrained, 'efficientnet-b2')
     },
     
     'efficientnet-b4': {
         'fc_name': '_fc',
-        'fc': nn.Linear(in_features=1792, out_features=4, bias=True),
+        'fc': nn.Linear(in_features=1792, out_features=out_features, bias=True),
         'init_op': partial(EfficientNet.from_pretrained, 'efficientnet-b4')
     },
     
     'efficientnet-b5': {
         'fc_name': '_fc',
-        'fc': nn.Linear(in_features=2048, out_features=4, bias=True),
+        'fc': nn.Linear(in_features=2048, out_features=out_features, bias=True),
         'init_op': partial(EfficientNet.from_pretrained, 'efficientnet-b5')
     },
     
     'efficientnet-b6': {
         'fc_name': '_fc',
-        'fc': nn.Linear(in_features=2304, out_features=4, bias=True),
+        'fc': nn.Linear(in_features=2304, out_features=out_features, bias=True),
         'init_op': partial(EfficientNet.from_pretrained, 'efficientnet-b6')
     },
     
     'mixnet_xl': {
         'fc_name': 'classifier',
-        'fc': nn.Linear(in_features=1536, out_features=4, bias=True),
+        'fc': nn.Linear(in_features=1536, out_features=out_features, bias=True),
         'init_op': partial(timm.create_model, 'mixnet_xl', pretrained=True)
     },
     
     'mixnet_s': {
         'fc_name': 'classifier',
-        'fc': nn.Linear(in_features=1536, out_features=4, bias=True),
+        'fc': nn.Linear(in_features=1536, out_features=out_features, bias=True),
         'init_op':  partial(timm.create_model, 'mixnet_s', pretrained=True)
     }, 
     
     'mixnet_s_fromscratch': {
         'fc_name': 'classifier',
-        'fc': nn.Linear(in_features=1536, out_features=4, bias=True),
+        'fc': nn.Linear(in_features=1536, out_features=out_features, bias=True),
         'init_op':  partial(timm.create_model, 'mixnet_s', pretrained=False)
     }, 
     }

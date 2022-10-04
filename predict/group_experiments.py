@@ -14,13 +14,11 @@ def main():
     arg = parser.add_argument
     arg('--output', type=str, default='models_predictions/', help='output folder')
     arg('--folder', type=str, default='Test/', help='output folder')
-    arg('--subset', type=str, default='LB', help='output folder')
+
     arg('--id', type=str, default='0000', help='output folder')
     arg("--test_single_image", help='test single image', action='store_true')
     
     args = parser.parse_args()
-    args.output = os.path.join(args.output, args.subset)
-    
     #today = date.today()
     #d = today.strftime('%m%d')
     d = args.id
@@ -69,28 +67,13 @@ def main():
     if args.test_single_image:
         probabilities_zoo_lb['QF']=90 # needs to be changed according to the quality factor of the single image
     else:
-        if args.subset == 'LB':
-            test_qf_dicts_path = os.path.join(DATA_ROOT_PATH, 'Test_qf_dicts.p')
-            with open(test_qf_dicts_path, 'rb') as handle:
-                (names_qf, qf_names) = pickle.load(handle)
-            qf_df = pd.DataFrame.from_records(list(names_qf.items()),columns=['NAME','QF'])
 
-        else:
-            qf_df = pd.DataFrame()
-            qfs = [75,90,95]
-            IL = []
-            qfs_list = []
-            for qf in qfs:
-                with open('./IL_'+args.subset+'_'+str(qf)+'.p', 'rb') as handle:
-                    il = pickle.load(handle)
-                IL.extend(il)
-                qfs_list.extend([qf]*len(il))
-
-            qf_df['NAME'] = IL
-            qf_df['QF'] = qfs_list
-        
+        test_qf_dicts_path = os.path.join(DATA_ROOT_PATH, 'Test_qf_dicts.p')
+        with open(test_qf_dicts_path, 'rb') as handle:
+            (names_qf, qf_names) = pickle.load(handle)
+        qf_df = pd.DataFrame.from_records(list(names_qf.items()),columns=['NAME','QF'])
         probabilities_zoo_lb = probabilities_zoo_lb.merge(qf_df)
-    print(probabilities_zoo_lb.columns)
+
     probabilities_zoo_lb.to_csv(os.path.join(args.output, 'probabilities_zoo_'+folder_subpath+'_'+d+'.csv'))
 
 

@@ -10,7 +10,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     arg = parser.add_argument
-    arg('--zoo-file', type=str, default='models_predictions/LB/probabilities_zoo_lb.csv', help='path to zoo file')
+    arg('--zoo-file', type=str, default='models_predictions/probabilities_zoo_lb.csv', help='path to zoo file')
     arg('--weights_path', type=str, default='weights/catboost/best_catboost.cmb', help='path to catboost weights')
     arg('--n-splits', type=int, default=10 , help='num CV splits')
     arg("--test_single_image", help='test single image', action='store_true')
@@ -42,7 +42,7 @@ def main():
     if args.test_single_image:
         print('this image is', 'malicous' if scores[0]==1 else 'innocent')
     else:
-        with open('models_predictions/LB/out_of_bounds_Test.p', 'rb') as handle:
+        with open('models_predictions/out_of_bounds_Test.p', 'rb') as handle:
             oor = pickle.load(handle)
 
         for im_name in oor:

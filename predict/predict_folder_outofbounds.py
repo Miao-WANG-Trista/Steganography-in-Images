@@ -13,10 +13,10 @@ def main():
     arg = parser.add_argument
     arg('--folder', type=str, default='Test/', help='path to test folder')
     arg('--output', type=str, default='models_predictions/', help='output folder')
-    arg('--subset', type=str, default='LB' , help='A subset of the folder? train_module, test or val')
+    # arg('--subset', type=str, default='LB' , help='A subset of the folder? train_module, test or val')
     
     args = parser.parse_args()
-    os.makedirs(os.path.join(args.output, args.subset), exist_ok=True)
+    os.makedirs(os.path.join(args.output), exist_ok=True)
     
     folder = os.path.join(DATA_ROOT_PATH, args.folder)
     IL = os.listdir(folder)
@@ -40,7 +40,7 @@ def main():
         
     print('Found ',len(out_of_bounds), ' OOB images in folder')
         
-    with open(os.path.join(args.output, args.subset,'out_of_bounds_'+args.folder[:-1]+'.p'), 'wb') as handle:
+    with open(os.path.join(args.output, 'out_of_bounds.p'), 'wb') as handle:
         pickle.dump(out_of_bounds, handle)
     
 

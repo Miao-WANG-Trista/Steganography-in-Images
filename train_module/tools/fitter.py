@@ -14,6 +14,9 @@ from train_module.tools.kaggle_tools import *
 
 warnings.filterwarnings("ignore")
 
+
+
+
 class Fitter:
     
     def __init__(self, model, train_loader, validation_loader, device, config):

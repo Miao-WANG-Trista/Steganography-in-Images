@@ -8,7 +8,7 @@ import pandas as pd
 import pickle
 from apex import amp
 
-from train_module.tools.kaggle_tools import log_args
+
 
 sys.path.insert(1,'./')
 from train_module.zoo.models import *
@@ -17,6 +17,7 @@ from train_module.datafeeding.retriever import *
 from train_module.tools.torch_utils import *
 from train_module.tools.fitter import *
 from train_module.optim import get_optimizer
+from train_module.tools.kaggle_tools import log_args
 
 def main():
     
@@ -33,17 +34,18 @@ def main():
     arg('--batch-size', type=int, default=10, help='batch size')
     arg('--load-checkpoint', type=str, default='' , help='path to checkpoint to load')
     arg('--fine-tune', type=int, default=0, help='Finetune? ie reset optimization parameters and load only weights')
-    arg('--output', type=str, default='weights/', help='output folder')
+    arg('--output', type=str, default='weights/nsf5/', help='output folder')
     arg('--random-seed', type=int, default=0, help='random seed')
     arg('--fp16', type=int, default=1, help='use AMP?')
-    arg('--decoder', type=str, default='NR', help='jpeg decoder, R or NR')
-    arg('--device', type=str, default='cuda:0', help='device id')
+    arg('--decoder', type=str, default='R', help='jpeg decoder, R or NR')
+    arg('--device', type=str, default='0', help='device id')
+    arg('--test_size', type=float, default=0.2, help='device id')
     
     
     args = parser.parse_args()
     
     
-    os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
+    # os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
     os.environ['CUDA_VISIBLE_DEVICES'] = args.device
     
     #torch.cuda.set_device(int(args.device.split(':')[-1]))
@@ -52,8 +54,10 @@ def main():
     device = 'cuda:0' #torch.device(args.device)
     # QFs = ['75','90', '95']
     Classes = ['Cover', 'nsf5']
-    IL_train = []
-    IL_val = []
+    total = os.listdir(DATA_ROOT_PATH+'Cover')
+    index = int((1-args.test_size)*len(total))
+    IL_train = total[:index]
+    IL_val = total[index:]
             
     dataset = []
     for label, kind in enumerate(Classes):
@@ -109,7 +113,7 @@ def main():
 
     os.makedirs(TrainGlobalConfig.base_dir, exist_ok=True)
     log_args(args.__dict__, os.path.join(args.output+args.experiment, 'run_hyper_params.txt'))
-    net = get_net(args.model)
+    net = get_net(args.model,out_features=2)
 
     if args.surgery == 1:
         source = 'timm' if args.model.startswith('mixnet') else 'efficientnet-pytorch'
@@ -127,7 +131,8 @@ def main():
         image_names=dataset[dataset['fold'] != 0].image_name.values,
         labels=dataset[dataset['fold'] != 0].label.values,
         transforms=get_train_transforms(),
-        decoder=args.decoder
+        decoder=args.decoder,
+        output_features = 2
     )
     
     
@@ -136,7 +141,8 @@ def main():
         image_names=dataset[dataset['fold'] == 0].image_name.values,
         labels=dataset[dataset['fold'] == 0].label.values,
         transforms=get_valid_transforms(),
-        decoder=args.decoder
+        decoder=args.decoder,
+        output_features=2
     )
 
     train_loader = torch.utils.data.DataLoader(
