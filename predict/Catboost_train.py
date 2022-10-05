@@ -18,7 +18,7 @@ import seaborn as sns
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
 
-def split(df):
+def split(df, subset):
     """
     process the dataframe to generate 'cate' and 'label' as target variables, identify categorical features, standardize numerical features, identify target variable
     and do train-validation test split
@@ -26,7 +26,10 @@ def split(df):
     Return
     x_train, x_test, y_train, y_test
     """
-    cate_dict = {'ver': 0, 'POD': 1, 'ARD': 2, 'ERD': 3}
+    if subset == '3Algorithms':
+        cate_dict = {'ver': 0, 'POD': 1, 'ARD': 2, 'ERD': 3}
+    elif subset == 'for_nsf5':
+        cate_dict = {'ver': 0, 'sf5': 1}
     df['cate'] = df['NAME'].apply(lambda x: cate_dict[x[-7:-4]])
     df['label'] = df['cate'].apply(lambda x: 0 if x == 0 else 1)
 
@@ -57,14 +60,15 @@ def main():
     arg('--zoo-file', type=str, default='models_predictions/LB/probabilities_zoo_lb.csv', help='path to zoo file')
     arg('--weights_dir', type=str, default='weights/catboost/', help='path to catboost train_module dir')
     arg('--n-splits', type=int, default=3 , help='num CV splits')
+    arg('--subset', type=str, default='3Algorithms', help='the folder for three algorithms or nsf5?')
 
 
     args = parser.parse_args()
 
     if not os.path.exists(args.weights_dir):  # create a directory if path to store catboost weights doesn't exist
-        os.makedirs(args.train_module_dir)
+        os.makedirs(args.weights_dir)
     df = pd.read_csv(args.zoo_file,index_col=0)
-    x_train, x_test, y_train, y_test = split(df)
+    x_train, x_test, y_train, y_test = split(df,subset=args.subset)
 
     # Catboost training
     # indicating categorical features
@@ -95,7 +99,6 @@ def main():
 
     # Feature importance
     print(CV_cat.best_estimator_.get_feature_importance(prettified=True))
-
     # Accuracy score
     print("Accuracy for Catboost on CV data: ", accuracy_score(y_test, y_pred_cat))
 
