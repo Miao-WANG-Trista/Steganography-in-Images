@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+form {
+    margin: auto;
+    width: 35%;
+}
+
+.result {
+    margin: auto;
+    width: 35%;
+    border: 1px solid #ccc;
+}
+</style>
+
+<head>
+    <title>Image Stegnography Detection</title>
+</head>
+<body>
+    <div class="prediction">
+        <h1>Image Prediction</h1>
+		<form action="/predict" method="POST" enctype="multipart/form-data" >
+			<fieldset>
+				<legend>Input values:</legend>
+				<label for = "file">file name:</label>
+				<input id="file" name = "file" type= "file"/>
+<!--				<input type="submit" name="submit" value="submit"/>-->
+			</fieldset>
+
+			<br>
+
+			<label for="folder">folder</label>
+			<input type="text" id="folder" name="folder" >
+			<br>
+
+			<label for="subset">subset</label>
+				<select id="subset" name="subset" required="required">
+					<option value="3Algorithms" selected>3Algorithms</option>
+					<option value="for_nsf5">nsf5</option>
+				</select>
+				<br>
+			<label for="device">device</label>
+			<input type="text" id="device" value='cuda:0' name="device" required="required">
+			<br>
+			<label for="test_single_image">only test single image?</label>
+				<select id="test_single_image" name="test_single_image" required="required">
+					<option value=True selected>yes</option>
+					<option value=False>no, I am testing a folder of images</option>
+
+    		</select>
+    		<br>
+    		<label for="num_workers">num_workers</label>
+    		<select id="num_workers" name="num_workers" required="required">
+      			<option value="1" selected>1</option>
+      			<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+    		</select>
+    		<br>
+    		<label for="batch_size">Batch_size</label>
+    		<select id="batch_size" name="batch_size" required="required">
+      			<option value=8>8</option>
+				<option value=10 selected>10</option>
+      			<option value=12>12</option>
+				<option value=16>16</option>
+    		</select>
+    		<br>
+
+        	<button type="submit" value='Predict' class="btn btn-primary btn-block btn-large">Predict</button>
+<!--        </form>-->
+
+        <br>
+		</form>
+		<h2>{{ message }}</h2>
+       <h2>{{ prediction_text }}</h2>
+    </div>
+
+<!--	<div class="result" >-->
+<!--		{% if result %}-->
+<!--		  <br> The image is:-->
+<!--		  <p style="font-size:50px">{{ result }}</p>-->
+<!--		{% endif %}-->
+<!--	</div>-->
+</body>
+</html>
