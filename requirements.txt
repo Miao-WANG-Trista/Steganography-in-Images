@@ -2,6 +2,7 @@ Cython
 numpy
 tqdm
 pathlib
+flask
 git+https://github.com/dwgoon/jpegio
 catalyst==20.5.1
 albumentations==0.4.5
