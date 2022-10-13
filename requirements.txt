@@ -9,7 +9,7 @@ albumentations==0.4.5
 timm==0.3.2
 catboost
 scikit-optimize
-# cv2
+opencv-python
 # horovod==0.19.1
 # tensorflow
 oct2py
@@ -20,4 +20,4 @@ sklearn
 torch==1.12.1+cu116
 torchvision
 torchaudio
---extra-index-url https://download.pytorch.org/whl/cu116torchvision
+--extra-index-url https://download.pytorch.org/whl/cu116/

@@ -1,7 +1,6 @@
 from flask import Flask,render_template,request
 from datetime import datetime
-import flask
-from werkzeug.utils import secure_filename
+import time
 import os,glob
 import sys
 sys.path.insert(1,'./')
@@ -19,9 +18,10 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    time_start = time.time()
     test_single_image = eval(request.form['test_single_image'])
     folder = request.form['folder']
-    test_single_image = False if folder =="" else test_single_image
+    test_single_image = True if folder=="" else False
     subset = request.form['subset']
     device = request.form['device']
     num_workers = int(request.form['num_workers'])
@@ -30,7 +30,7 @@ def predict():
     to_delete_files = glob.glob(os.path.join(path0, '*.csv'))
     [(os.remove(f), to_delete_files.remove(f)) for f in to_delete_files]
     if test_single_image:
-
+        image_size =1
         f = request.files.get('file')
 
         filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "JPG"
@@ -42,6 +42,11 @@ def predict():
         folder = file_path + filename
     else:
         DATA_ROOT_PATH = os.environ.get('DATA_ROOT_PATH')
+        filename = DATA_ROOT_PATH+'/'+subset+'Test_qf_dicts.p'
+        try:
+            os.remove(filename)
+        except OSError:
+            pass
         image_size = len(os.listdir(os.path.join(DATA_ROOT_PATH,folder)))
         print('We are processing {} images'.format(image_size))
     if subset == '3Algorithms':
@@ -112,8 +117,9 @@ def predict():
         result = catboost_predict(zoo_file=parent_dir + 'probabilities_zoo_Test_' + id + '.csv',
                                   test_single_image=test_single_image,subset=subset,weights_path='weights/nsf5/catboost/best_catboost.cmb')
 
-
-    return render_template('index.html', message = 'We processed {} images'.format(image_size), prediction_text='Detected result is {}'.format(result) if test_single_image else 'Detection result is saved.')
+    time_end = time.time()
+    running_time = time_end - time_start
+    return render_template('index.html', message = 'We processed %d images, time cost : %.3f sec' %(image_size,running_time), prediction_text='Detected result is {}'.format(result) if test_single_image else 'Detection result is saved.')
 
 def main():
     app.run(host='0.0.0.0',port=8000,debug=True)

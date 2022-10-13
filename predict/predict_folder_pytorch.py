@@ -170,6 +170,8 @@ def main():
 def pytorch_predict(folder ='/Test',model='efficientnet-b4',experiment='efficientnet_b4_NR_mish',surgery=0,test_time_augmentation=4,
                     checkpoint='',output='models_predictions/',decoder='R',fp16=0,subset='3Algorithms',device='cuda:0',test_single_image=False,batch_size=10,
                     num_workers=1):
+
+    device = torch.device(device)
     DATA_ROOT_PATH = os.environ.get('DATA_ROOT_PATH')
     seed_everything(1994)
     os.makedirs(os.path.join(output, subset), exist_ok=True)
@@ -197,7 +199,8 @@ def pytorch_predict(folder ='/Test',model='efficientnet-b4',experiment='efficien
         columns = [experiment + '_pc', experiment + '_pnsf5']
         column_list = ['NAME', experiment + '_pc', experiment + '_pnsf5']
 
-    net = net.cuda(device)
+    # net = net.cuda(device)
+    net = net.to(device)
     checkpoint = torch.load(checkpoint, map_location=device)
     net.load_state_dict(checkpoint['model_state_dict'])
     # if args.fp16:
@@ -242,7 +245,8 @@ def pytorch_predict(folder ='/Test',model='efficientnet-b4',experiment='efficien
 
             for step, (image_names, images) in enumerate(
                     tqdm(test_loader, bar_format='{l_bar}{bar:20}{r_bar}{bar:-20b}')):
-                y_pred = net(images.cuda(device).float())
+                # y_pred = net(images.cuda(device).float())
+                y_pred = net(images.to(device).float())
                 y_pred = nn.functional.softmax(y_pred, dim=1).float().data.cpu().numpy()
                 y_preds.extend(y_pred)
 
@@ -279,7 +283,8 @@ def pytorch_predict(folder ='/Test',model='efficientnet-b4',experiment='efficien
 
             transformed_image = torch.from_numpy(transformed_image)
 
-            y_pred = net(transformed_image.cuda(device).float())
+            # y_pred = net(transformed_image.cuda(device).float())
+            y_pred = net(transformed_image.to(device).float())
             y_pred = nn.functional.softmax(y_pred, dim=1).float().data.cpu().numpy()
 
             y_preds.extend(y_pred)

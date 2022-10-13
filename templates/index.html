@@ -41,8 +41,11 @@ form {
 				</select>
 				<br>
 			<label for="device">device</label>
-			<input type="text" id="device" value='cuda:0' name="device" required="required">
-			<br>
+				<select id="device" name="device" required="required">
+						<option value="cuda:0">GPU</option>
+						<option value="cpu" selected>CPU</option>
+					</select>
+					<br>
 			<label for="test_single_image">only test single image?</label>
 				<select id="test_single_image" name="test_single_image" required="required">
 					<option value=True selected>yes</option>

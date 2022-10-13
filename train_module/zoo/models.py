@@ -2,11 +2,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 from functools import partial
 import numpy as np
-import tensorflow as tf
-# import horovod.tensorflow as hvd
-# from tensorflow.contrib.framework import arg_scope
-# from tensorflow.contrib import layers
-import numpy as np
+
 
 def get_net(model_name,out_features=4):
     from efficientnet_pytorch import EfficientNet
