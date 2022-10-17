@@ -39,7 +39,7 @@ def predict():
     to_delete_files = glob.glob(os.path.join(path0, '*.csv'))
     [(os.remove(f), to_delete_files.remove(f)) for f in to_delete_files]
 
-    def second_step(folder, subset=subset, test_single_image=test_single_image, device=device, num_workers=num_workers, batch_size=batch_size, time_start=time_start):
+    def second_step(folder=folder, subset=subset, test_single_image=test_single_image, device=device, num_workers=num_workers, batch_size=batch_size, time_start=time_start):
         if subset == '3Algorithms':
             print('yes,I am here, entering prediction process for 3Algorithms')
             richmodels(folder=folder, experiment='JRM', checkpoint='weights/rich_models/QF75_JRM_Y_ensemble_v7.mat',
@@ -154,30 +154,53 @@ def predict():
         running_time = time_end - time_start
         return result, running_time
     if test_single_image:
-        image_size =1
-        f = request.files.get('file')
-        file_name = secure_filename(f.filename)
-        filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "jpg"
-        print('new filename is: ', filename)
-        file_path = basedir +"/uploaded_images/"
+        files = request.files.getlist('file')
+        image_size =len(files)
+        number = 0
+        img = list(range(2))
+        # img[1] = None if len(files) == 1 else 1
+        results = []
+        running_time = 0
+        exifs = []
+        file_names = []
+        for f in files:
+            file_name = secure_filename(f.filename)
+            filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "jpg"
+            print('new filename is: ', filename)
+            file_path = basedir +"/uploaded_images/"
 
-        os.makedirs(file_path, exist_ok=True)
-        f.save(file_path+filename)
-        folder = file_path + filename
+            os.makedirs(file_path, exist_ok=True)
+            f.save(file_path+filename)
+            folder = file_path + filename
 
-        # to show the image
-        byteImgIO = io.BytesIO()
-        byteImg = Image.open(folder)
-        byteImg.save(byteImgIO, "JPEG")
-        img = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
+            # to show the image
+            byteImgIO = io.BytesIO()
+            byteImg = Image.open(folder)
+            byteImg.save(byteImgIO, "JPEG")
+            print(number)
+            img[number] = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
 
-        exif = exif_viewer(folder)
-        result, running_time = second_step(folder=folder)
-        return render_template('index_with_images.html', file_name=file_name, img=img, exif=exif,
-                               message='We processed %d images, time cost : %.3f sec' % (image_size, running_time),
-                               prediction_text='Detected result is {}'.format(
-                                   result) if test_single_image else 'Detection result is saved.')
-
+            exif = exif_viewer(folder)
+            result, running_time_temp = second_step(folder=folder)
+            print(result)
+            number +=1
+            results.append(result)
+            exifs.append(exif)
+            file_names.append(file_name)
+            running_time += running_time_temp
+            path0 = 'models_predictions/' + subset
+            to_delete_files = glob.glob(os.path.join(path0, '*.csv'))
+            [(os.remove(f), to_delete_files.remove(f)) for f in to_delete_files]
+        if len(files)==2:
+            return render_template('index_with_multiple_images.html',img1=img[0],img2 = img[1], exif=exifs,
+                                   message='We processed %d images, time cost : %.3f sec' % (image_size, running_time),
+                                   prediction_text='Detected result for {} is {}'.format(file_names,
+                                       results) if test_single_image else 'Detection result is saved intos csv.')
+        else:
+            return render_template('index_with_images.html', img1=img[0], exif=exifs,
+                                   message='We processed %d images, time cost : %.3f sec' % (image_size, running_time),
+                                   prediction_text='Detected result for {} is {}'.format(file_names,
+                                                                                         result) if test_single_image else 'Detection result is saved intos csv.')
     else:
         DATA_ROOT_PATH = os.environ.get('DATA_ROOT_PATH')
         filename = DATA_ROOT_PATH+'/'+subset+'Test_qf_dicts.p'
@@ -197,46 +220,74 @@ def predict():
 
 @app.route('/exif', methods=['POST'])
 def exif():
-    f = request.files.get('file')
-    file_name = secure_filename(f.filename)
-    filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "jpg"
-    print('new filename is: ', filename)
-    file_path = basedir + "/uploaded_images/"
+    files = request.files.getlist('file')
+    number = 0
+    img = list(range(2))
+    file_names = []
+    predicts = []
+    for f in files:
+        file_name = secure_filename(f.filename)
+        filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "jpg"
+        print('new filename is: ', filename)
+        file_path = basedir + "/uploaded_images/"
 
-    os.makedirs(file_path, exist_ok=True)
-    folder = file_path + filename
-    f.save(folder)
-    message = exif_viewer(folder)
+        os.makedirs(file_path, exist_ok=True)
+        folder = file_path + filename
+        f.save(folder)
+        message = exif_viewer(folder)
 
-    # to show the image
-    byteImgIO = io.BytesIO()
-    byteImg = Image.open(folder)
-    byteImg.save(byteImgIO, "JPEG")
+        # to show the image
+        byteImgIO = io.BytesIO()
+        byteImg = Image.open(folder)
+        byteImg.save(byteImgIO, "JPEG")
 
-    img = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
-    return render_template('index_with_images.html', img=img, file_name=file_name,message=message)
+        img[number] = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
+        number +=1
+        file_names.append(file_name)
+        predicts.append(message)
+    message = 'EXIF results for {}: '.format(file_names)
+    if len(files)==2:
+        return render_template('index_with_multiple_images.html', img1=img[0],img2=img[1],message=message, prediction_text=predicts)
+    else:
+        return render_template('index_with_images.html', img1=img[0],message=message,prediction_text = predicts)
 
 @app.route('/lsb', methods=['POST'])
 def lsb():
-    f = request.files.get('file')
-    file_name = secure_filename(f.filename)
-    filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "png"
-    print('new filename is: ', filename)
-    file_path = basedir + "/uploaded_images/"
+    files = request.files.getlist('file')
+    number=0
+    img=list(range(2))
+    # img[1] = None if len(files) ==1 else 1
+    messages = []
+    for f in files:
+        file_name = secure_filename(f.filename)
+        filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "png"
+        print('new filename is: ', filename)
+        file_path = basedir + "/uploaded_images/"
 
-    os.makedirs(file_path, exist_ok=True)
-    f.save(file_path + filename)
-    folder = file_path + filename
-    message = decode_text(folder)
-    message = 'Here is the decoded message: '+message if message !="" else 'no LSB steganography detected'
+        os.makedirs(file_path, exist_ok=True)
+        f.save(file_path + filename)
+        folder = file_path + filename
+        message = decode_text(folder)
+        if message == "" or len(message) > 50:
+            message = 'Result for {} is :no LSB steganography detected'.format(file_name)
+        else:
+            message = 'Result for {} the decoded message: '.format(file_name) +message
+        print(message)
+        # to show the image
+        byteImgIO = io.BytesIO()
+        byteImg = Image.open(folder)
+        byteImg.save(byteImgIO, "PNG")
 
-    # to show the image
-    byteImgIO = io.BytesIO()
-    byteImg = Image.open(folder)
-    byteImg.save(byteImgIO, "JPEG")
+        img[number] = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
+        messages.append(message)
+        number+=1
+        # imgs.append(img)
 
-    img = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
-    return render_template('index_with_images.html',img=img,message=message, file_name=file_name)
+    if len(files) == 2:
+        return render_template('index_with_multiple_images.html', img1=img[0], img2=img[1], message=messages)
+    else:
+        return render_template('index_with_images.html', img1=img[0], message=messages)
+
 
 def main():
     app.run(host='0.0.0.0',port=8000,debug=True)

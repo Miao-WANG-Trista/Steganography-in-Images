@@ -14,8 +14,10 @@ form {
 }
 </style>
 
+
 <!--<html lang="en"-->
 <head>
+	<link type="text/css" rel="styleSheet"  href="{{ url_for('static', filename = 'css/index.css') }}"/>
     <title>Image Stegnography Detection</title>
 </head>
 <body>
@@ -24,9 +26,9 @@ form {
 		<h2 style="text-align: center;">JPG only here</h2>
 		<form action="/predict" method="POST" enctype="multipart/form-data" >
 			<fieldset>
-				<legend>Input values:</legend>
+				<legend>Input values(one or two images):</legend>
 				<label for = "file">upload:</label>
-				<input id="file" name = "file" type= "file" accept=".jpg" multiple/>
+				<input id="file" name = "file" type= "file" accept="image/jpeg" multiple/>
 
 				<button type='submit' formaction="/exif">only to check EXIF</button>
 				<br>
@@ -34,14 +36,6 @@ form {
 			</fieldset>
 
 			<br>
-
-<!--			<label for="func">which functionality you want to try?</label>-->
-<!--				<select id="func" name="func" required="required">-->
-<!--					<option value="EXIF">EXIF</option>-->
-<!--					<option value="">nsf5</option>-->
-<!--				</select>-->
-<!--				<br>-->
-
 			<label for="folder">folder</label>
 			<input type="text" id="folder" name="folder" >
 			<br>
@@ -84,15 +78,9 @@ form {
 
 			<button type="reset" value="reset" class="btn btn-primary btn-block btn-large" >Reset</button>
         	<button type="submit" value='Submit' class="btn btn-primary btn-block btn-large">Predict</button>
-
-
-<!--        </form>-->
-
-        <br>
+			<br>
 		</form>
-		<h3> {{ exif }}</h3>
-		<h3>{{ message }}</h3>
-       <h3>{{ prediction_text }}</h3>
+
     </div>
     <div class="LSB">
 		<h2 style="text-align: center;">LSB decoder, PNG only here</h2>
@@ -101,7 +89,6 @@ form {
 				<legend>Input values:</legend>
 				<label for = "file">upload:</label>
 				<input id="file1" name = "file" type= "file" accept="image/png" multiple/>
-<!--				<input type="submit" name="submit" value="submit"/>-->
 
 				<button type='submit' formaction="/exif">only to check EXIF</button>
 			</fieldset>
@@ -109,16 +96,19 @@ form {
 			<button type="submit" value='LSB' class="btn btn-primary btn-block btn-large">LSB decoder</button>
 		</form>
 	</div>
-<!--	<div class="result" >-->
-<!--		{% if result %}-->
-<!--		  <br> The image is:-->
-<!--		  <p style="font-size:50px">{{ result }}</p>-->
-<!--		{% endif %}-->
-<!--	</div>-->
-<!--	<p style="text-align:center">Uploaded image</p>-->
-<!--	<div class="col-sm-2" style="width:200px; margin-left: auto; margin-right: auto;">-->
-<!--    	<img width="400" src="data:;base64,{{ img }}" alt="The processed image" />-->
-<!--	</div>-->
 
+	<p style="text-align:center">Uploaded image: </p>
+	<div class="col-sm-2" style="width:300px; margin-left: auto; margin-right: auto;">
+		<table><tr>
+			<td><img width="400" src="data:;base64,{{ img1 }}" alt="The processed image" /></td>
+<!--			<td><img width="400" src="data:;base64,{{ img2 }}" alt="The processed image" /></td>-->
+		</tr></table>
+	</div >
+
+	<div>
+		<h3 style="text-align: center;"> {{ exif }}</h3>
+		<h3 style="text-align: center;">{{ message }}</h3>
+       <h3 style="text-align: center;">{{ prediction_text }}</h3>
+	</div>
 </body>
 </html>
