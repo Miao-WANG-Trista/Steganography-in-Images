@@ -1,12 +1,9 @@
-import os
-import numpy as np 
-from torch import nn
-import torch
+
 import argparse
 from tqdm import tqdm
 import sys
-sys.path.insert(1,'./')
-# from apex.apex import amp
+
+
 from torch.utils.data.sampler import SequentialSampler
 sys.path.insert(1,'./')
 from train_module.zoo.models import *

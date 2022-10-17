@@ -1,10 +1,11 @@
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,jsonify
 from datetime import datetime
 import time
 import os,glob
 import sys
 import base64
 import io
+import pandas as pd
 from io import BytesIO
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -19,7 +20,11 @@ from LSB_tool.stegano_LSB import decode_text
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__, template_folder='templates')
 
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'JPG', 'PNG'])
 
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def home():
@@ -164,6 +169,8 @@ def predict():
         exifs = []
         file_names = []
         for f in files:
+            if not (f and allowed_file(f.filename)):
+                return jsonify({"error": 1001, "msg": "Please check the format of uploaded images"})
             file_name = secure_filename(f.filename)
             filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "jpg"
             print('new filename is: ', filename)
@@ -195,12 +202,12 @@ def predict():
             return render_template('index_with_multiple_images.html',img1=img[0],img2 = img[1], exif=exifs,
                                    message='We processed %d images, time cost : %.3f sec' % (image_size, running_time),
                                    prediction_text='Detected result for {} is {}'.format(file_names,
-                                       results) if test_single_image else 'Detection result is saved intos csv.')
+                                       results))
         else:
             return render_template('index_with_images.html', img1=img[0], exif=exifs,
                                    message='We processed %d images, time cost : %.3f sec' % (image_size, running_time),
                                    prediction_text='Detected result for {} is {}'.format(file_names,
-                                                                                         result) if test_single_image else 'Detection result is saved intos csv.')
+                                                                                         result))
     else:
         DATA_ROOT_PATH = os.environ.get('DATA_ROOT_PATH')
         filename = DATA_ROOT_PATH+'/'+subset+'Test_qf_dicts.p'
@@ -214,80 +221,118 @@ def predict():
         result, running_time = second_step()
         return render_template('index.html', exif=exif,
                                message='We processed %d images, time cost : %.3f sec' % (image_size, running_time),
-                               prediction_text='Detected result is {}'.format(
-                                   result) if test_single_image else 'Detection result is saved.')
+                               prediction_text='Detection result is saved.')
 
 
 @app.route('/exif', methods=['POST'])
 def exif():
-    files = request.files.getlist('file')
-    number = 0
-    img = list(range(2))
-    file_names = []
-    predicts = []
-    for f in files:
-        file_name = secure_filename(f.filename)
-        filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "jpg"
-        print('new filename is: ', filename)
-        file_path = basedir + "/uploaded_images/"
+    test_single_image = eval(request.form['test_single_image'])
+    folder = request.form['folder']
+    test_single_image = True if folder == "" else False
+    if test_single_image:
+        files = request.files.getlist('file')
+        number = 0
+        img = list(range(2))
+        file_names = []
+        predicts = []
+        for f in files:
+            # if not (f and allowed_file(f.filename)):
+            #     return jsonify({"error": 1001, "msg": "Please check the format of uploaded images"})
 
-        os.makedirs(file_path, exist_ok=True)
-        folder = file_path + filename
-        f.save(folder)
-        message = exif_viewer(folder)
+            file_name = secure_filename(f.filename)
+            filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "jpg"
+            print('new filename is: ', filename)
+            file_path = basedir + "/uploaded_images/"
 
-        # to show the image
-        byteImgIO = io.BytesIO()
-        byteImg = Image.open(folder)
-        byteImg.save(byteImgIO, "JPEG")
+            os.makedirs(file_path, exist_ok=True)
+            folder = file_path + filename
+            f.save(folder)
+            message = exif_viewer(folder)
 
-        img[number] = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
-        number +=1
-        file_names.append(file_name)
-        predicts.append(message)
-    message = 'EXIF results for {}: '.format(file_names)
-    if len(files)==2:
-        return render_template('index_with_multiple_images.html', img1=img[0],img2=img[1],message=message, prediction_text=predicts)
+            # to show the image
+            byteImgIO = io.BytesIO()
+            byteImg = Image.open(folder)
+            byteImg.save(byteImgIO, "JPEG")
+
+            img[number] = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
+            number +=1
+            file_names.append(file_name)
+            predicts.append(message)
+        message = 'EXIF results for {}: '.format(file_names)
+        if len(files)==2:
+            return render_template('index_with_multiple_images.html', img1=img[0],img2=img[1],message=message, prediction_text=predicts)
+        else:
+            return render_template('index_with_images.html', img1=img[0],message=message,prediction_text = predicts)
     else:
-        return render_template('index_with_images.html', img1=img[0],message=message,prediction_text = predicts)
+        DATA_ROOT_PATH = os.environ.get('DATA_ROOT_PATH')
+        folder = os.path.join(DATA_ROOT_PATH, folder)
+        image_size = len(os.listdir(folder))
+        alllist = os.listdir(folder)
+        df = pd.DataFrame(columns=['name', 'EXIF'])
+        for file in alllist:
+            message = exif_viewer(os.path.join(folder, file))
+            df.loc[len(df.index)] = [file, message]
+        df.to_csv('final_results_for_EXIF.csv')
+        return render_template('index.html',
+                               message='We processed %d images' % (image_size),
+                               prediction_text='Decoded result is saved.')
 
 @app.route('/lsb', methods=['POST'])
 def lsb():
-    files = request.files.getlist('file')
-    number=0
-    img=list(range(2))
-    # img[1] = None if len(files) ==1 else 1
-    messages = []
-    for f in files:
-        file_name = secure_filename(f.filename)
-        filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "png"
-        print('new filename is: ', filename)
-        file_path = basedir + "/uploaded_images/"
+    test_single_image = eval(request.form['test_single_image'])
+    folder = request.form['folder']
+    test_single_image = True if folder == "" else False
+    if test_single_image:
+        files = request.files.getlist('file')
+        number=0
+        img=list(range(2))
+        # img[1] = None if len(files) ==1 else 1
+        messages = []
+        for f in files:
+            if not (f and allowed_file(f.filename)):
+                return jsonify({"error": 1001, "msg": "Please check the format of uploaded images"})
 
-        os.makedirs(file_path, exist_ok=True)
-        f.save(file_path + filename)
-        folder = file_path + filename
-        message = decode_text(folder)
-        if message == "" or len(message) > 50:
-            message = 'Result for {} is :no LSB steganography detected'.format(file_name)
+            file_name = secure_filename(f.filename)
+            filename = datetime.now().strftime("%Y%m%d%H%M%S") + "." + "png"
+            print('new filename is: ', filename)
+            file_path = basedir + "/uploaded_images/"
+
+            os.makedirs(file_path, exist_ok=True)
+            f.save(file_path + filename)
+            folder = file_path + filename
+            message = decode_text(folder)
+            if message == "" or len(message) > 50:
+                message = 'Result for {} is :no LSB steganography detected'.format(file_name)
+            else:
+                message = 'Result for {} the decoded message: '.format(file_name) +message
+            print(message)
+            # to show the image
+            byteImgIO = io.BytesIO()
+            byteImg = Image.open(folder)
+            byteImg.save(byteImgIO, "PNG")
+
+            img[number] = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
+            messages.append(message)
+            number+=1
+            # imgs.append(img)
+
+        if len(files) == 2:
+            return render_template('index_with_multiple_images.html', img1=img[0], img2=img[1], message=messages)
         else:
-            message = 'Result for {} the decoded message: '.format(file_name) +message
-        print(message)
-        # to show the image
-        byteImgIO = io.BytesIO()
-        byteImg = Image.open(folder)
-        byteImg.save(byteImgIO, "PNG")
-
-        img[number] = base64.b64encode(byteImgIO.getvalue()).decode('ascii')
-        messages.append(message)
-        number+=1
-        # imgs.append(img)
-
-    if len(files) == 2:
-        return render_template('index_with_multiple_images.html', img1=img[0], img2=img[1], message=messages)
+            return render_template('index_with_images.html', img1=img[0], message=messages)
     else:
-        return render_template('index_with_images.html', img1=img[0], message=messages)
-
+        DATA_ROOT_PATH = os.environ.get('DATA_ROOT_PATH')
+        folder = os.path.join(DATA_ROOT_PATH,folder)
+        image_size = len(os.listdir(folder))
+        alllist = os.listdir(folder)
+        df = pd.DataFrame(columns=['name', 'decoded message'])
+        for file in alllist:
+            message = decode_text(os.path.join(folder,file))
+            df.loc[len(df.index)] = [file,message]
+        df.to_csv('final_results_for_lsb.csv')
+        return render_template('index.html',
+                               message='We processed %d images' % (image_size),
+                               prediction_text='Decoded result is saved.')
 
 def main():
     app.run(host='0.0.0.0',port=8000,debug=True)

@@ -21,30 +21,24 @@ form {
 <body>
     <div class="detection">
         <h1 style="text-align: center;">Image Steganography Detection</h1>
-		<h2 style="text-align: center;">JPG only here</h2>
+		<h4 style="text-align: center;">'Predict' only works for JPG images, 'LSB decoder' only works for PNG images</h4>
 		<form action="/predict" method="POST" enctype="multipart/form-data" >
 			<fieldset>
-				<legend>Input values:</legend>
-				<label for = "file">upload:</label>
-				<input id="file" name = "file" type= "file" accept=".jpg" multiple/>
-
-				<button type='submit' formaction="/exif">only to check EXIF</button>
+				<legend>Input values </legend>
+				<label for = "file">upload: one or two images</label>
+				<input id="file" name = "file" type= "file" accept="image/jpeg,image/png" multiple/>
+				<label for="folder">folder</label>
+				<input type="text" id="folder" name="folder" >
 				<br>
-
 			</fieldset>
 
 			<br>
+			<button type='submit' formaction="/exif">only to check EXIF</button>
+			<button type="submit" formaction='/lsb' value='LSB' class="btn btn-primary btn-block btn-large">LSB decoder</button>
 
-<!--			<label for="func">which functionality you want to try?</label>-->
-<!--				<select id="func" name="func" required="required">-->
-<!--					<option value="EXIF">EXIF</option>-->
-<!--					<option value="">nsf5</option>-->
-<!--				</select>-->
-<!--				<br>-->
-
-			<label for="folder">folder</label>
-			<input type="text" id="folder" name="folder" >
 			<br>
+			<br>
+
 
 			<label for="subset">subset</label>
 				<select id="subset" name="subset" required="required">
@@ -85,40 +79,12 @@ form {
 			<button type="reset" value="reset" class="btn btn-primary btn-block btn-large" >Reset</button>
         	<button type="submit" value='Submit' class="btn btn-primary btn-block btn-large">Predict</button>
 
-
-<!--        </form>-->
-
         <br>
 		</form>
 		<h3> {{ exif }}</h3>
 		<h3>{{ message }}</h3>
        <h3>{{ prediction_text }}</h3>
     </div>
-    <div class="LSB">
-		<h2 style="text-align: center;">LSB decoder, PNG only here</h2>
-		<form action="/lsb" method="POST" enctype="multipart/form-data" >
-			<fieldset>
-				<legend>Input values:</legend>
-				<label for = "file">upload:</label>
-				<input id="file1" name = "file" type= "file" accept="image/png" multiple/>
-<!--				<input type="submit" name="submit" value="submit"/>-->
-
-				<button type='submit' formaction="/exif">only to check EXIF</button>
-			</fieldset>
-
-			<button type="submit" value='LSB' class="btn btn-primary btn-block btn-large">LSB decoder</button>
-		</form>
-	</div>
-<!--	<div class="result" >-->
-<!--		{% if result %}-->
-<!--		  <br> The image is:-->
-<!--		  <p style="font-size:50px">{{ result }}</p>-->
-<!--		{% endif %}-->
-<!--	</div>-->
-<!--	<p style="text-align:center">Uploaded image</p>-->
-<!--	<div class="col-sm-2" style="width:200px; margin-left: auto; margin-right: auto;">-->
-<!--    	<img width="400" src="data:;base64,{{ img }}" alt="The processed image" />-->
-<!--	</div>-->
 
 </body>
 </html>
