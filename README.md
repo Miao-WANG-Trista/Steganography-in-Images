@@ -17,9 +17,15 @@ In your terminal, after having located to where the project is saved:
 1. prepare the python environment
 
 ```pip install -r requirements.txt```
+
 2. export the data environment
 ```./Test_images``` should be replaced by the path which is the parent directory of your image folder
 
 ```export DATA_ROOT_PATH=./Test_images```
+
 3. launch the Flask interface
+
 ```python3 app.py```
+
+This is a screenshot on the interface.
+![image](https://user-images.githubusercontent.com/77568908/196149563-b228bee7-e722-400e-ba8e-38baccac5656.png)
