@@ -33,4 +33,4 @@ This is a screenshot on the interface.
 ![image](https://user-images.githubusercontent.com/77568908/196149563-b228bee7-e722-400e-ba8e-38baccac5656.png)
 ### Details
 - You can either upload images, which will be shown on the interface once the results are returned or put down a folder name and the final results will be saved as .csv in the project directory.
-- You can change the parameters like device, batch_size or number of workers for DCT-based classifier.
+- You can configure the parameters like device, batch_size or number of workers for DCT-based classifier.
