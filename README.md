@@ -12,6 +12,7 @@ In this project, I mainly implemented three components:
 comes important, which can extract all metadata of an image.
 3. **DCT-based steganography classifier**: An classifier has been trained on JMiPOD, JUNIWARd, UERD embedding algorithms to identify the existence of them.
 
+More details like model performance and constraints are mentioned [here](https://drive.google.com/file/d/1XONCLq2AGtTrX5dw-aQmdoh6A30EKifX/view?usp=sharing).
 ## How to use
 In your terminal, after having located to where the project is saved:
 1. prepare the python environment
@@ -28,4 +29,8 @@ In your terminal, after having located to where the project is saved:
 ```python3 app.py```
 
 This is a screenshot on the interface.
+
 ![image](https://user-images.githubusercontent.com/77568908/196149563-b228bee7-e722-400e-ba8e-38baccac5656.png)
+### Details
+- You can either upload images, which will be shown on the interface once the results are returned or put down a folder name and the final results will be saved as .csv in the project directory.
+- You can change the parameters like device, batch_size or number of workers for DCT-based classifier.
