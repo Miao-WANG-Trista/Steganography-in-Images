@@ -34,3 +34,7 @@ This is a screenshot on the interface.
 ### Details
 - You can either upload images, which will be shown on the interface once the results are returned or put down a folder name and the final results will be saved as .csv in the project directory.
 - You can configure the parameters like device, batch_size or number of workers for DCT-based classifier.
+
+### Troubleshooting
+There might be an error when running, and you should change the .py file as per the error message
+from ```import collections.abc as container_abcs``` to ```from torch._six import container_abcs```
