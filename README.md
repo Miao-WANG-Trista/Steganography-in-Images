@@ -37,4 +37,4 @@ This is a screenshot on the interface.
 
 ### Troubleshooting
 There might be an error when running, and you should change the .py file as per the error message
-from ```import collections.abc as container_abcs``` to ```from torch._six import container_abcs```
+change ```from torch._six import container_abcs``` to ```from collections import abc as container_abcs```
